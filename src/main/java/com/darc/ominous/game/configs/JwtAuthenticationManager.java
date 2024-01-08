@@ -1,29 +1,37 @@
 package com.darc.ominous.game.configs;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import com.darc.ominous.game.utils.JWT;
+import com.darc.ominous.game.utils.JwtUtil;
 
 import reactor.core.publisher.Mono;
 
 @Component
 public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
-    private JWT jwt;
+    private JwtUtil jwtUtil;
 
     public JwtAuthenticationManager() {
-        this.jwt = new JWT();
+        this.jwtUtil = new JwtUtil();
     }
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-        String authToken = authentication.getCredentials().toString();
-        String username = jwt.getUsernameFromToken(authToken);
+        try {
 
-        Authentication result = new UsernamePasswordAuthenticationToken(username, authToken, authentication.getAuthorities());
+            String authToken = authentication.getPrincipal().toString();
 
-        return Mono.just(result);
+            Boolean isValid = jwtUtil.validate(authToken);
+
+            if (isValid) {
+                return Mono.justOrEmpty(authentication);
+            }
+
+            return Mono.error(new BadCredentialsException("Invalid bearer token."));
+        } catch (Exception e) {
+            return Mono.error(new BadCredentialsException(e.getMessage(), e.getCause()));
+        }
     }
 }
