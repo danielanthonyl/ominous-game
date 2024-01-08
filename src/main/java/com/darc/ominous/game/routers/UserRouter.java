@@ -13,6 +13,8 @@ public class UserRouter {
 
     @Bean
     RouterFunction<ServerResponse> userRoutes(UserHandler userHandler) {
-        return RouterFunctions.route(RequestPredicates.POST("/user"), userHandler::createUser);
+        return RouterFunctions
+                .route(RequestPredicates.POST("/user"), userHandler::createUser)
+                .andRoute(RequestPredicates.POST("/login"), userHandler::login);
     }
 }

@@ -22,12 +22,16 @@ public class UserService {
     }
 
     public Mono<Response> createUser(User user) {
-        // DEBT!: hash the password
-        String hashedPassword = user.password();
         String id = UUID.randomUUID().toString();
 
-        User newUser = new User(id, user.username(), user.email(), hashedPassword);
+        User newUser = new User(id, user.username(), user.email(), user.password());
         userMapper.createUser(newUser);
+        Response response = new Response("User created successfully.", null);
+
+        return Mono.just(response);
+    }
+
+    public Mono<Response> createSession(User user) {
         Response response = new Response("User created successfully.", null);
 
         return Mono.just(response);
