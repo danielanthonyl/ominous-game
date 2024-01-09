@@ -1,6 +1,9 @@
 package com.darc.ominous.game.handlers;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -26,12 +29,23 @@ public class UserHandler {
     }
 
     public Mono<ServerResponse> createUserSession(ServerRequest request) {
-        Mono<User> requestMonoUser = request.bodyToMono(User.class);
 
-        return requestMonoUser
+        return request.bodyToMono(User.class)
+                .flatMap(user -> validateCredentials(user))
                 .flatMap(userService::createUserSession)
                 .flatMap(token -> ServerResponse.ok()
                         .bodyValue(new Response("user session successfully created", token)))
                 .onErrorResume(e -> ServerResponse.badRequest().bodyValue(new Response(e.getMessage(), e.getCause())));
+    }
+
+    private Mono<User> validateCredentials(User user) {
+        Boolean isEmailValid = Objects.isNull(user.email()) || user.email().isBlank();
+        Boolean isPasswordValid = Objects.isNull(user.password()) || user.password().isBlank();
+
+        if (isEmailValid || isPasswordValid) {
+            throw new BadCredentialsException("Fields email and password are mandatory.");
+        }
+
+        return Mono.just(user);
     }
 }

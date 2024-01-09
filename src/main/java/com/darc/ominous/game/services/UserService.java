@@ -27,31 +27,43 @@ public class UserService {
 
     public Mono<String> createUser(User user) {
         return Mono.fromCallable(() -> {
-            // Check if user with the same email already exists (non-blocking operation)
             User foundUser = userMapper.findUserByCredentials(null, user.username(), user.email());
-            System.out.println("is unique " + foundUser.email());
 
             if (!Objects.isNull(foundUser)) {
                 throw new BadCredentialsException("Credentials aren't unique.");
             }
 
-            // Generate a new user and save to the database
             String id = UUID.randomUUID().toString();
             User newUser = new User(id, user.username(), user.email(), user.password());
             userMapper.createUser(newUser);
 
-            // Generate a token and return it
             return jwtUtil.generate(user.username());
         });
     }
 
     public Mono<String> createUserSession(User user) {
+        String errorMessage = "Unable to find user with provided credentials";
+
         // verify if user exist on DB
-        //// throw error if does not exists
-        // verify if user's credentials are correct
-        //// throw error if not correct
+        User foundUser = userMapper.findUserByCredentials(null, user.username(), user.email());
+
+        System.out.println(foundUser);
+
+        if (Objects.isNull(foundUser)) {
+            //// throw error if does not exists
+            throw new BadCredentialsException(errorMessage);
+        }
+
+        // verify if user credentials are correct
+        if (!user.email().equals(foundUser.email()) || !user.password().equals(foundUser.password())) {
+            // throw error if not correct
+            throw new BadCredentialsException(errorMessage);
+        }
+
         // generate jwt
+        String jwt = jwtUtil.generate(user.username());
+
         // respond with jwt
-        return Mono.just("");
+        return Mono.just(jwt);
     }
 }

@@ -1,24 +1,16 @@
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.darc.ominous.game.mappers.UserMapper">
-    <update id="createUser" statementType="CALLABLE">
-        {call crt_usr(#{id}, #{username}, #{email}, #{password})}
-    </update>
+    <update id="createUser" statementType="CALLABLE"> {call crt_usr(#{id}, #{username}, #{email},
+        #{password})} </update>
 
-    <select id="findUserById" statementType="CALLABLE">
-        select * from usr where id = #{id}
+    <select id="findUserByCredentials" resultType="User"> 
+        SELECT * FROM usr 
+            WHERE (
+                id = #{id, jdbcType=VARCHAR} OR 
+                username = #{username, jdbcType=VARCHAR} OR 
+                email = #{email, jdbcType=VARCHAR}) 
+            ORDER BY id 
+            FETCH FIRST ROW ONLY
     </select>
-
-    <select id="findUserByCredentials" resultType="User">
-        SELECT *
-            FROM usr
-            WHERE
-                (#{id, jdbcType=VARCHAR} IS NULL OR id = #{id, jdbcType=VARCHAR})
-                OR (#{username, jdbcType=VARCHAR} IS NULL OR username = #{username, jdbcType=VARCHAR})
-                AND (#{email, jdbcType=VARCHAR} IS NULL OR email = #{email, jdbcType=VARCHAR})
-    </select>
-
-
 </mapper>

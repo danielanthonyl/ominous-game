@@ -11,13 +11,15 @@ BEGIN
         FROM
             USR
         WHERE
-            ID = P_ID
-            OR (P_USRNM IS NULL
-            AND USERNAME = P_USRNM)
-            OR (P_EMAIL IS NULL
-            AND EMAIL = P_EMAIL)
-            OR (P_PASSWORD IS NULL
-            AND PASSWORD = P_PASSWORD)
+          id = p_id
+          or
+          username = p_usrnm
+          or
+          email = p_email
+           -- or (p_email is null
+           -- and email = p_email)
+           -- or (p_usrnm is null
+           -- and username = p_usrnm)
     ) LOOP
         PIPE ROW(USR_ROW(USR_REC.ID, USR_REC.USERNAME, USR_REC.EMAIL, USR_REC.PASSWORD));
     END LOOP;
