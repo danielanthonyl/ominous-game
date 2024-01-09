@@ -7,6 +7,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 
@@ -21,6 +25,11 @@ public class SecurityConfig {
     JwtSecurityContext securityContextRepository;
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
         AuthenticationWebFilter filter = new AuthenticationWebFilter(authenticationManager);
         filter.setServerAuthenticationConverter(securityContextRepository);
@@ -31,9 +40,9 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.POST, "/createUserSession").permitAll()
                         .anyExchange().authenticated())
                 .addFilterAt(filter, SecurityWebFiltersOrder.AUTHENTICATION)
-                .httpBasic(config -> config.disable())
-                .formLogin(config -> config.disable())
-                .csrf(config -> config.disable())
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .build();
     }
 }

@@ -3,8 +3,12 @@ package com.darc.ominous.game.services;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.darc.ominous.game.utils.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.darc.ominous.game.mappers.UserMapper;
@@ -15,10 +19,12 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class UserService {
+    @Autowired
+    private PasswordUtil passwordUtil;
 
     @Autowired
     private JwtUtil jwtUtil;
-    private UserMapper userMapper;
+    final private UserMapper userMapper;
 
     @Autowired
     public UserService(UserMapper userMapper) {
@@ -27,14 +33,16 @@ public class UserService {
 
     public Mono<String> createUser(User user) {
         return Mono.fromCallable(() -> {
-            User foundUser = userMapper.findUserByCredentials(null, user.username(), user.email());
+            final User foundUser = userMapper.findUserByCredentials(null, user.username(), user.email());
 
             if (!Objects.isNull(foundUser)) {
                 throw new BadCredentialsException("Credentials aren't unique.");
             }
 
-            String id = UUID.randomUUID().toString();
-            User newUser = new User(id, user.username(), user.email(), user.password());
+            final String id = UUID.randomUUID().toString();
+            final String encodedPassword = passwordUtil.encode(user.password());
+            final User newUser = new User(id, user.username(), user.email(), encodedPassword);
+
             userMapper.createUser(newUser);
 
             return jwtUtil.generate(user.username());
@@ -47,15 +55,13 @@ public class UserService {
         // verify if user exist on DB
         User foundUser = userMapper.findUserByCredentials(null, user.username(), user.email());
 
-        System.out.println(foundUser);
-
         if (Objects.isNull(foundUser)) {
-            //// throw error if does not exists
+            //// throw error if it does not exist
             throw new BadCredentialsException(errorMessage);
         }
 
         // verify if user credentials are correct
-        if (!user.email().equals(foundUser.email()) || !user.password().equals(foundUser.password())) {
+        if (!user.email().equals(foundUser.email()) || !passwordUtil.compare(user.password(), foundUser.password())) {
             // throw error if not correct
             throw new BadCredentialsException(errorMessage);
         }

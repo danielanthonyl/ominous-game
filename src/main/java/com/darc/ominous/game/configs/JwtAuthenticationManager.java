@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
-    private JwtUtil jwtUtil;
+    final private JwtUtil jwtUtil;
 
     public JwtAuthenticationManager() {
         this.jwtUtil = new JwtUtil();
@@ -20,7 +20,6 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         try {
-
             String authToken = authentication.getPrincipal().toString();
 
             Boolean isValid = jwtUtil.validate(authToken);

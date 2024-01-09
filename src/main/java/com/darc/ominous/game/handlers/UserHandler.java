@@ -23,15 +23,15 @@ public class UserHandler {
         Mono<User> requestMonoUser = request.bodyToMono(User.class);
 
         return requestMonoUser
+                .flatMap(this::validateCredentials)
                 .flatMap(userService::createUser)
                 .flatMap(token -> ServerResponse.ok().bodyValue(new Response("user created successfully", token)))
                 .onErrorResume(e -> ServerResponse.badRequest().bodyValue(new Response(e.getMessage(), e.getCause())));
     }
 
     public Mono<ServerResponse> createUserSession(ServerRequest request) {
-
         return request.bodyToMono(User.class)
-                .flatMap(user -> validateCredentials(user))
+                .flatMap(this::validateCredentials)
                 .flatMap(userService::createUserSession)
                 .flatMap(token -> ServerResponse.ok()
                         .bodyValue(new Response("user session successfully created", token)))
