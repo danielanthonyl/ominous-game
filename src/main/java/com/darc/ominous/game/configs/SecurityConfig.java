@@ -22,6 +22,9 @@ public class SecurityConfig {
     @Autowired
     JwtSecurityContext securityContextRepository;
 
+    @Autowired
+    JwtAuthenticationConverter jwtAuthenticationConverter;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -30,16 +33,18 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
         AuthenticationWebFilter filter = new AuthenticationWebFilter(authenticationManager);
-        filter.setServerAuthenticationConverter(securityContextRepository);
+        filter.setServerAuthenticationConverter(jwtAuthenticationConverter);
 
         return serverHttpSecurity
                 .authorizeExchange(config -> config
                         .pathMatchers(HttpMethod.POST, "/createUser").permitAll()
                         .pathMatchers(HttpMethod.POST, "/createUserSession").permitAll()
                         .anyExchange().authenticated())
+                .securityContextRepository(securityContextRepository)
                 .addFilterAt(filter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .logout(ServerHttpSecurity.LogoutSpec::disable)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .build();
     }

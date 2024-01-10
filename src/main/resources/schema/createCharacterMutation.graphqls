@@ -1,0 +1,32 @@
+type Mutation {
+    createCharacter(character: CreateCharacterInput!): Character
+}
+
+input CreateCharacterInput {
+    name: String,
+    occupation: String,
+    health: Int,
+    mana: Int,
+    experience: Int,
+    level: Int,
+    strength: Int,
+    vitality: Int,
+    dexterity: Int,
+    intelligence: Int
+}
+
+type Character {
+    id: String,
+    userId: String,
+    name: String,
+    occupation: String,
+    health: Int,
+    mana: Int,
+    experience: Int,
+    level: Int,
+    createdAt: Int,
+    strength: Int,
+    vitality: Int,
+    dexterity: Int,
+    intelligence: Int
+}

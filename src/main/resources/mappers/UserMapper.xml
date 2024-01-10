@@ -4,7 +4,7 @@
     <update id="createUser" statementType="CALLABLE"> {call crt_usr(#{id}, #{username}, #{email},
         #{password})} </update>
 
-    <select id="findUserByCredentials" resultType="User"> 
+    <select id="findUserByCredentials" resultType="UserEntity">
         SELECT * FROM usr 
             WHERE (
                 id = #{id, jdbcType=VARCHAR} OR 

@@ -13,4 +13,5 @@ CREATE TABLE USR (
     PASSWORD VARCHAR(255)
 );
 
+select * from usr;
 

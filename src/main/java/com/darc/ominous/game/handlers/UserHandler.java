@@ -1,18 +1,16 @@
 package com.darc.ominous.game.handlers;
 
-import java.util.Objects;
-
+import com.darc.ominous.game.model.domain.User;
+import com.darc.ominous.game.services.UserService;
+import com.darc.ominous.game.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import com.darc.ominous.game.model.domain.User;
-import com.darc.ominous.game.services.UserService;
-import com.darc.ominous.game.utils.Response;
-
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 @Component
 public class UserHandler {
@@ -30,7 +28,8 @@ public class UserHandler {
     }
 
     public Mono<ServerResponse> createUserSession(ServerRequest request) {
-        return request.bodyToMono(User.class)
+        return request
+                .bodyToMono(User.class)
                 .flatMap(this::validateCredentials)
                 .flatMap(userService::createUserSession)
                 .flatMap(token -> ServerResponse.ok()
@@ -39,8 +38,8 @@ public class UserHandler {
     }
 
     private Mono<User> validateCredentials(User user) {
-        Boolean isEmailValid = Objects.isNull(user.email()) || user.email().isBlank();
-        Boolean isPasswordValid = Objects.isNull(user.password()) || user.password().isBlank();
+        Boolean isEmailValid = Objects.isNull(user.email) || user.email.isBlank();
+        Boolean isPasswordValid = Objects.isNull(user.password) || user.password.isBlank();
 
         if (isEmailValid || isPasswordValid) {
             throw new BadCredentialsException("Fields email and password are mandatory.");
@@ -48,4 +47,5 @@ public class UserHandler {
 
         return Mono.just(user);
     }
+
 }

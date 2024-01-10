@@ -2,6 +2,11 @@ package com.darc.ominous.game.model.domain;
 
 import org.apache.ibatis.type.Alias;
 
-@Alias("User")
-public record User(String id, String username, String email, String password) {
+@Alias("UserEntity")
+public class User {
+    public String id;
+    public String username;
+    public String email;
+
+    public String password;
 }

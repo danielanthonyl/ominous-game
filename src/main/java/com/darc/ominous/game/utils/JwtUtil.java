@@ -4,15 +4,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.stereotype.Component;
-
 @Component
 public class JwtUtil {
-    private String secret = "mysecretkeyyyyyyyyyyyyyyyyyyyyyy";
-    private SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
+    private final String secret = "mysecretkeyyyyyyyyyyyyyyyyyyyyyy";
+    private final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
     public Claims getClaims(String token) throws MalformedJwtException {
         return Jwts
@@ -25,6 +24,10 @@ public class JwtUtil {
 
     public Boolean validate(String token) throws MalformedJwtException {
         return getClaims(token).getSubject() != null;
+    }
+
+    public String getSubject(String token) {
+        return getClaims(token).getSubject();
     }
 
     public String generate(String subject) {

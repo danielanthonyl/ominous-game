@@ -59,7 +59,14 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>com.netflix.graphql.dgs</groupId>
+            <artifactId>graphql-dgs-webflux-starter</artifactId>
+            <version>8.2.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -77,7 +84,12 @@
 			<version>3.0.3</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.netflix.graphql.dgs</groupId>
+            <artifactId>graphql-dgs</artifactId>
+            <version>8.2.0</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
