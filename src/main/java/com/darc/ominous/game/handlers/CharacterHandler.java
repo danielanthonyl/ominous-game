@@ -28,18 +28,17 @@ public class CharacterHandler {
     }
 
     public Mono<ServerResponse> findCharacter(ServerRequest request) {
-        String characterId = request.queryParam("characterId").orElse(null);
-        String characterName = request.queryParam("characterName").orElse(null);
-
-        FindCharacterInput findCharacterInput = new FindCharacterInput();
-        findCharacterInput.characterId = characterId;
-        findCharacterInput.characterName = characterName;
-
-        return Mono.just(findCharacterInput)
+        return Mono.just(request.pathVariable("identifier"))
                 .flatMap(FindCharacterInput::validateFields)
                 .flatMap(characterService::findCharacter)
                 .flatMap(character -> ServerResponse.ok().bodyValue(new Response(null, character)))
                 .onErrorResume(error -> ServerResponse.badRequest()
                         .bodyValue(new Response(error.getMessage(), error.getCause())));
+    }
+
+    public Mono<ServerResponse> listCharacters(ServerRequest request) {
+        return characterService.listCharacters()
+                .flatMap(characters -> ServerResponse.ok().bodyValue(new Response(null, characters)))
+                .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new Response(error.getMessage(), error.getCause())));
     }
 }

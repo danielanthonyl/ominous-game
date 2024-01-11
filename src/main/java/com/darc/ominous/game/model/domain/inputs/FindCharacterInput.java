@@ -7,11 +7,11 @@ public class FindCharacterInput {
     public String characterId;
     public String characterName;
 
-    public static Mono<FindCharacterInput> validateFields(FindCharacterInput findCharacterInput) {
-        if (Utils.isEmpty(findCharacterInput.characterId) && Utils.isEmpty(findCharacterInput.characterName)) {
+    public static Mono<String> validateFields(String identifier) {
+        if (Utils.isEmpty(identifier)) {
             throw new RuntimeException("Either pass a characterId or characterName parameter.");
         }
 
-        return Mono.just(findCharacterInput);
+        return Mono.just(identifier);
     }
 }

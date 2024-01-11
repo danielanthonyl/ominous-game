@@ -7,5 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CharacterMapper {
     void createCharacter(Character character);
 
-    Character findCharacter(String id, String name);
+    Character findCharacter(String userId, String id, String name);
+
+    Character[] listCharacters(String userId);
 }

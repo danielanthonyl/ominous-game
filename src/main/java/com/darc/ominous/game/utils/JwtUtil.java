@@ -37,7 +37,7 @@ public class JwtUtil {
                         String token = authentication.getPrincipal().toString();
                         return this.getClaims(token).getSubject();
                     } catch (Exception e) {
-                        throw new RuntimeException("Failed to extract user ID from token", e);
+                        throw new RuntimeException("Failed to extract subject from token", e);
                     }
                 });
 

@@ -15,9 +15,16 @@
     <select id="findCharacter" resultType="CharacterEntity">
         SELECT * FROM chrctr
         WHERE (
-        id = #{id, jdbcType=VARCHAR} OR
+        #{userId, jdbcType=VARCHAR} IS NULL OR user_id = #{userId, jdbcType=VARCHAR}) AND
+        (id = #{id, jdbcType=VARCHAR} OR
         "name" = #{name, jdbcType=VARCHAR})
         ORDER BY id
         FETCH FIRST ROW ONLY
+    </select>
+
+    <select id="listCharacters" resultType="CharacterEntity">
+        SELECT * FROM chrctr
+        WHERE user_id = #{userId}
+        ORDER BY "name"
     </select>
 </mapper>

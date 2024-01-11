@@ -14,12 +14,11 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+    final private UserMapper userMapper;
     @Autowired
     private PasswordUtil passwordUtil;
-
     @Autowired
     private JwtUtil jwtUtil;
-    final private UserMapper userMapper;
 
     @Autowired
     public UserService(UserMapper userMapper) {
@@ -34,39 +33,32 @@ public class UserService {
                 throw new BadCredentialsException("Credentials aren't unique.");
             }
 
-            final String id = UUID.randomUUID().toString();
+            String id = UUID.randomUUID().toString();
             final String encodedPassword = passwordUtil.encode(user.password);
-//            final User newUser = new User(id, user.username, user.username, encodedPassword);
 
             user.id = id;
             user.password = encodedPassword;
             userMapper.createUser(user);
 
-            return jwtUtil.generate(user.email);
+            return jwtUtil.generate(id);
         });
     }
 
     public Mono<String> createUserSession(User user) {
-        String errorMessage = "Unable to find user with provided credentials";
+        return Mono.fromCallable(() -> {
+            String errorMessage = "Unable to find user with provided credentials";
 
-        // verify if user exist on DB
-        User foundUser = userMapper.findUserByCredentials(null, null, user.email);
+            User foundUser = userMapper.findUserByCredentials(null, null, user.email);
 
-        if (Objects.isNull(foundUser)) {
-            //// throw error if it does not exist
-            throw new BadCredentialsException(errorMessage);
-        }
+            if (Objects.isNull(foundUser)) {
+                throw new BadCredentialsException(errorMessage);
+            }
 
-        // verify if user credentials are correct
-        if (!user.email.equals(foundUser.email) || !passwordUtil.compare(user.password, foundUser.password)) {
-            // throw error if not correct
-            throw new BadCredentialsException(errorMessage);
-        }
+            if (!user.email.equals(foundUser.email) || !passwordUtil.compare(user.password, foundUser.password)) {
+                throw new BadCredentialsException(errorMessage);
+            }
 
-        // generate jwt
-        String jwt = jwtUtil.generate(user.email);
-
-        // respond with jwt
-        return Mono.just(jwt);
+            return jwtUtil.generate(foundUser.id);
+        });
     }
 }

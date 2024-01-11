@@ -1,0 +1,4 @@
+input CreateCharacterInput {
+    name: String,
+    occupation: String
+}

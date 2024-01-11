@@ -13,11 +13,16 @@ public class CharacterRouter {
 
     @Bean
     RouterFunction<ServerResponse> createCharacterRoute(CharacterHandler characterHandler) {
-        return RouterFunctions.route(RequestPredicates.POST("/createCharacter"), characterHandler::createCharacter);
+        return RouterFunctions.route(RequestPredicates.POST("/character"), characterHandler::createCharacter);
     }
 
     @Bean
     RouterFunction<ServerResponse> findCharacterRoute(CharacterHandler characterHandler) {
-        return RouterFunctions.route(RequestPredicates.GET("/findCharacter"), characterHandler::findCharacter);
+        return RouterFunctions.route(RequestPredicates.GET("/character/{identifier}"), characterHandler::findCharacter);
+    }
+
+    @Bean
+    RouterFunction<ServerResponse> listCharactersRoute(CharacterHandler characterHandler) {
+        return RouterFunctions.route(RequestPredicates.GET("/character"), characterHandler::listCharacters);
     }
 }

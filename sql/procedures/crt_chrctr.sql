@@ -92,22 +92,31 @@ BEGIN
       v_dexterity,
       v_intelligence
     );
+
+    COMMIT;
 END crt_chrctr;
 /
+
+v_user_id := null;
+
+WITH v_user_id AS (
+  SELECT '63e662b6-9610-49b9-a09b-94d9dc61bfb0' as v_user_id FROM dual
+)
+SELECT *
+FROM chrctr, v_user_id
+WHERE (
+  v_user_id.v_user_id IS NULL OR user_id = v_user_id.v_user_id
+) AND (
+  id = 'e9376b0e-cd72-4923-aab3-abb059886266' OR "name" = 'Wormhole'
+)
+ORDER BY id;
+FETCH FIRST ROW ONLY;
 
 select * from usr;
 select * from chrctr;
 CALL crt_chrctr(
-        'character_id_123',
-        '9ef8b827-ad40-44d3-b00f-8c6066424889',
-        'Warrior',
-        100,  -- health
-        50,   -- mana
-        0,    -- experience
-        1,    -- level
-        SYSDATE,  -- current date and time for created_at
-        20,   -- strength
-        15,   -- vitality
-        10,   -- dexterity
-        12    -- intelligence
+        '63e662b6-9610-49b9-a09b-94d9dc61bfb6',
+        '63e662b6-9610-49b9-a09b-94d9dc61bfb0',
+        'Killbox',
+        'WARRIOR'
     );

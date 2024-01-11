@@ -1,0 +1,4 @@
+type Query {
+    findCharacter(identifier: String!): Character
+    listCharacters: [Character]
+}

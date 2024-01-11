@@ -1,4 +1,4 @@
-type CharacterType {
+type Character {
     id: String,
     userId: String,
     name: String,

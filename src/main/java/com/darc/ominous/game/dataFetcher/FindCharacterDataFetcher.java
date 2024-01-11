@@ -18,10 +18,10 @@ public class FindCharacterDataFetcher {
         this.characterService = characterService;
     }
 
-    @DgsQuery
-    public Mono<Character> findCharacter(@InputArgument FindCharacterInput findCharacterInput) {
-        FindCharacterInput.validateFields(findCharacterInput);
+    @DgsQuery()
+    public Mono<Character> findCharacter(@InputArgument String identifier) {
+        FindCharacterInput.validateFields(identifier);
 
-        return characterService.findCharacter(findCharacterInput);
+        return characterService.findCharacter(identifier);
     }
 }

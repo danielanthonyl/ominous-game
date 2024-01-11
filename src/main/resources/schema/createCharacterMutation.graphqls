@@ -1,8 +1,0 @@
-type Mutation {
-    createCharacter(character: Character!): CharacterType
-}
-
-input Character {
-    name: String,
-    occupation: String
-}
