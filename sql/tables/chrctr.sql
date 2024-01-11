@@ -3,7 +3,7 @@ drop table chrctr;
 CREATE TABLE chrctr (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
-    "name"  VARCHAR(36) NOT NULL,
+    "name"  VARCHAR(36) UNIQUE NOT NULL,
     occupation VARCHAR(12) NOT NULL,
     health INT NOT NULL,
     mana INT NOT NULL,

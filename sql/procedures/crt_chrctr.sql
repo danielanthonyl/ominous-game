@@ -2,46 +2,96 @@ CREATE OR REPLACE PROCEDURE crt_chrctr(
     p_id VARCHAR2,
     p_user_id VARCHAR2,
     p_name VARCHAR2,
-    p_occupation VARCHAR2,
-    p_health INT,
-    p_mana INT,
-    p_experience INT,
-    p_level INT,
-    p_strength INT,
-    p_vitality INT,
-    p_dexterity INT,
-    p_intelligence INT
+    p_occupation VARCHAR2
 ) AS
+    v_health INT;
+    v_mana INT;
+    v_strength INT;
+    v_vitality INT;
+    v_dexterity INT;
+    v_intelligence INT;
 BEGIN
-  INSERT INTO chrctr(
-     id,
-     user_id,
-     "name",
-     occupation,
-     health,
-     mana,
-     experience,
-     "level",
-     created_at,
-     strength,
-     vitality,
-     dexterity,
-     intelligence
-  ) VALUES (
-     p_id,
-     p_user_id,
-     p_name,
-     p_occupation,
-     p_health,
-     p_mana,
-     p_experience,
-     p_level,
-     SYSDATE,
-     p_strength,
-     p_vitality,
-     p_dexterity,
-     p_intelligence
-  );
+    IF p_occupation = 'MONK' THEN
+      v_health := 100;
+      v_mana := 20;
+      v_strength := 9;
+      v_vitality := 100;
+      v_dexterity := 0;
+      v_intelligence := 0;
+
+    ELSIF p_occupation = 'WARRIOR' THEN
+      v_health := 40;
+      v_mana := 20;
+      v_strength := 100;
+      v_vitality := 9;
+      v_dexterity := 0;
+      v_intelligence := 0;
+
+    ELSIF p_occupation = 'WIZARD' THEN
+      v_health := 20;
+      v_mana := 100;
+      v_strength := 0;
+      v_vitality := 9;
+      v_dexterity := 0;
+      v_intelligence := 100;
+
+    ELSIF p_occupation = 'ASSASSIN' THEN
+      v_health := 40;
+      v_mana := 20;
+      v_strength := 0;
+      v_vitality := 9;
+      v_dexterity := 100;
+      v_intelligence := 100;
+
+    ELSIF p_occupation = 'HEALER' THEN
+      v_health := 20;
+      v_mana := 100;
+      v_strength := 0;
+      v_vitality := 9;
+      v_dexterity := 0;
+      v_intelligence := 100;
+
+    ELSIF p_occupation = 'TAMER' THEN
+      v_health := 20;
+      v_mana := 100;
+      v_strength := 0;
+      v_vitality := 9;
+      v_dexterity := 50;
+      v_intelligence := 50;
+
+    ELSE
+      RAISE_APPLICATION_ERROR(-20001, 'Invalid occupation: ' || p_occupation);
+    END IF;
+
+    INSERT INTO chrctr(
+      id,
+      user_id,
+      "name",
+      occupation,
+      health,
+      mana,
+      experience,
+      "level",
+      created_at,
+      strength,
+      vitality,
+      dexterity,
+      intelligence
+    ) VALUES (
+      p_id,
+      p_user_id,
+      p_name,
+      p_occupation,
+      v_health,
+      v_mana,
+      0, -- experience
+      0, -- level
+      SYSDATE, -- DATE
+      v_strength,
+      v_vitality,
+      v_dexterity,
+      v_intelligence
+    );
 END crt_chrctr;
 /
 

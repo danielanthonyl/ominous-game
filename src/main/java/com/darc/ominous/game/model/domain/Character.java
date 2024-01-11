@@ -31,10 +31,11 @@ public class Character {
     }
 
     public static Mono<Character> validateOccupation(Character character) throws IllegalArgumentException {
+        character.occupation = character.occupation.toUpperCase();
         String errorMessage = "Invalid occupation: " + character.occupation;
 
         try {
-            CharacterOccupations occupationEnum = CharacterOccupations.valueOf(character.occupation.toUpperCase());
+            CharacterOccupations occupationEnum = CharacterOccupations.valueOf(character.occupation);
 
             if (occupationEnum.equals(CharacterOccupations.MONK) ||
                     occupationEnum.equals(CharacterOccupations.WARRIOR) ||
@@ -51,18 +52,8 @@ public class Character {
         }
     }
 
-    public static Mono<Character> validateCharacterFields(Character character) {
-        if (Utils.isEmpty(character.name) ||
-                Utils.isEmpty(character.occupation) ||
-                Utils.isPositive(character.health) ||
-                Utils.isPositive(character.mana) ||
-                Utils.isPositive(character.experience) ||
-                Utils.isPositive(character.level) ||
-                Utils.isPositive(character.strength) ||
-                Utils.isPositive(character.vitality) ||
-                Utils.isPositive(character.dexterity) ||
-                Utils.isPositive(character.intelligence)
-        ) {
+    public static Mono<Character> validateCharacterFields(Character character) throws BadCredentialsException {
+        if (Utils.isEmpty(character.name) || Utils.isEmpty(character.occupation)) {
             throw new BadCredentialsException("All character fields are required.");
         }
 

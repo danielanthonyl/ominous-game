@@ -15,4 +15,9 @@ public class CharacterRouter {
     RouterFunction<ServerResponse> createCharacterRoute(CharacterHandler characterHandler) {
         return RouterFunctions.route(RequestPredicates.POST("/createCharacter"), characterHandler::createCharacter);
     }
+
+    @Bean
+    RouterFunction<ServerResponse> findCharacterRoute(CharacterHandler characterHandler) {
+        return RouterFunctions.route(RequestPredicates.GET("/findCharacter"), characterHandler::findCharacter);
+    }
 }

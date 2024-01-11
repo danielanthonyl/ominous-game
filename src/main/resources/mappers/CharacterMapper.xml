@@ -7,16 +7,17 @@
         #{id},
         #{userId},
         #{name},
-        #{occupation},
-        #{health},
-        #{mana},
-        #{experience},
-        #{level},
-        #{strength},
-        #{vitality},
-        #{dexterity},
-        #{intelligence}
+        #{occupation}
         )
         }
     </update>
+
+    <select id="findCharacter" resultType="CharacterEntity">
+        SELECT * FROM chrctr
+        WHERE (
+        id = #{id, jdbcType=VARCHAR} OR
+        "name" = #{name, jdbcType=VARCHAR})
+        ORDER BY id
+        FETCH FIRST ROW ONLY
+    </select>
 </mapper>

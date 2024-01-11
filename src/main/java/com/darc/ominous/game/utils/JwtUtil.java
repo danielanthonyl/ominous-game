@@ -4,7 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 
@@ -26,8 +29,18 @@ public class JwtUtil {
         return getClaims(token).getSubject() != null;
     }
 
-    public String getSubject(String token) {
-        return getClaims(token).getSubject();
+    public Mono<String> getSubject() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(authentication -> {
+                    try {
+                        String token = authentication.getPrincipal().toString();
+                        return this.getClaims(token).getSubject();
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to extract user ID from token", e);
+                    }
+                });
+
     }
 
     public String generate(String subject) {
@@ -37,4 +50,5 @@ public class JwtUtil {
                 .signWith(key)
                 .compact();
     }
+
 }

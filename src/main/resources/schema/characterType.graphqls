@@ -1,0 +1,15 @@
+type CharacterType {
+    id: String,
+    userId: String,
+    name: String,
+    occupation: String,
+    health: Int,
+    mana: Int,
+    experience: Int,
+    level: Int,
+    createdAt: String,
+    strength: Int,
+    vitality: Int,
+    dexterity: Int,
+    intelligence: Int
+}

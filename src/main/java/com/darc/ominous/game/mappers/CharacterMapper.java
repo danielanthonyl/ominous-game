@@ -6,4 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CharacterMapper {
     void createCharacter(Character character);
+
+    Character findCharacter(String id, String name);
 }

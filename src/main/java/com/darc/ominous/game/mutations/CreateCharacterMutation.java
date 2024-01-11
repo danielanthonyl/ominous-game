@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 
 @DgsComponent
 public class CreateCharacterMutation {
+
     private final CharacterService characterService;
 
     @Autowired
@@ -19,8 +20,9 @@ public class CreateCharacterMutation {
 
     @DgsMutation
     public Mono<Character> createCharacter(@InputArgument Character character) {
-        System.out.println("character name");
-        System.out.println(character.name);
+        Character.validateCharacterFields(character);
+        Character.validateOccupation(character);
+
         return characterService.createCharacter(character);
     }
 }

@@ -1,0 +1,8 @@
+type Query {
+    findCharacter(findCharacterInput: FindCharacterInput): CharacterType
+}
+
+input FindCharacterInput {
+    characterId: String
+    characterName: String
+}
